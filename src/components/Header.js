@@ -3,7 +3,10 @@ import Link from "next/link";
 export default function Header() {
     return (
         <header className={styles.header}>
-            <h1>APPLE GAME</h1>
+            <Link href="/" className={styles.title}>
+                <h1>APPLE GAME</h1>
+            </Link>
+
             <nav>
                 <Link href="/">Home</Link>
                 <Link href="/play">Play</Link>
