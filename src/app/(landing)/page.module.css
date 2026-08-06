@@ -1,4 +1,4 @@
 .page {
-    background-color: orange;
-    padding: 100px
+    background-color: rgb(79, 139, 30);
+    padding: 100px var(--side-padding)
 }
