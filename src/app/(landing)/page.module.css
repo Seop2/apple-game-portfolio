@@ -1,4 +1,5 @@
 .page {
-    background-color: rgb(79, 139, 30);
+    width: 100%;
+    background-color: rgb(233, 93, 38);
     padding: 100px var(--side-padding)
 }
