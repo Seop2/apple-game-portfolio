@@ -21,6 +21,12 @@
     --color-board-bg: var(--clr-yellow-400);
 
     --color-progress-bg: var(--clr-neutral-900);
+    --color-progress-border: var(--clr-amber-500);
+    --color-progress-thumb: var(--clr-yellow-400);
+
+    --color-refresh-border: var(--clr-amber-500);
+    --color-refresh-bg: var(--clr-yellow-400);
+
     --color-button-bg: var(--clr-neutral-900);
     --color-button-text: var(--clr-neutral-50);
 
