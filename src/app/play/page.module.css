@@ -1,4 +1,7 @@
 .page {
-    background-color: chocolate;
-    padding: 100px var(--side-padding);
+    padding: 30px var(--side-padding);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
