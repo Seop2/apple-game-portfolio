@@ -90,6 +90,10 @@ export default class AppleGameBoard extends HTMLElement {
                     height:100%;
                 }
             }
+                .refresh[disabled]{
+                    cursor:not-allowed;
+                    opacity : 0.5;
+                }
             .board{
                 --padding:5px;
                 --border:8px;
@@ -211,7 +215,7 @@ export default class AppleGameBoard extends HTMLElement {
         this.$board = this.$root.querySelector(".board");
         this.$appleIcon = this.$root.querySelector("#apple-icon").content;
         this.$score = this.$root.querySelector(".score span");
-        this.$button = this.$root.querySelector(".refresh");
+        this.$refresh = this.$root.querySelector(".refresh");
 
 
         const styles = window.getComputedStyle(this.$board);
@@ -224,6 +228,7 @@ export default class AppleGameBoard extends HTMLElement {
         this.pos1 = null; //[row, col]
         this.pos2 = null; //[row, col]
         this.score = 0;
+        this.refreshUsed = false;
 
         for (let row = 0; row < this.numRows; row++) {
             for (let col = 0; col < this.numCols; col++) {
@@ -251,7 +256,7 @@ export default class AppleGameBoard extends HTMLElement {
             }
         }
         document.addEventListener("mousemove", () => this.dragEnd());
-        this.$button.addEventListener("click", () => { location.reload() });
+        this.$refresh.addEventListener("click", () => this.refresh());
     }
     dragBegin(e, row, col) {
         if (e) {
@@ -316,6 +321,17 @@ export default class AppleGameBoard extends HTMLElement {
         }
         this.score += $selectedApples.length;
         this.$score.textContent = this.score;
+    }
+    refresh() {
+        if (this.refreshUsed) return;
+
+        for (const $apple of this.$apples) {
+            $apple.className = "apple";
+            const $number = $apple.querySelector("span");
+            $number.textContent = Math.floor(Math.random() * 9) + 1;
+        }
+        this.refreshUsed = true;
+        this.$refresh.setAttribute("disabled", "");
     }
 }
 
