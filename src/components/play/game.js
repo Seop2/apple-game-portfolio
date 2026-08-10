@@ -124,6 +124,7 @@ export default class AppleGameBoard extends HTMLElement {
                         height:100%;
                         color: white;
                         font-size: calc(var(--apple-size) / 2.2);
+                        z-index : 1;
 
                         display: flex;
                         align-items: center;
@@ -145,6 +146,17 @@ export default class AppleGameBoard extends HTMLElement {
                         color:var(--color-text);
                     }
                 }
+                    .apple.collected{
+                        svg{
+                            opacity : 0;
+                            transform: scale(2);
+                            transition: transform 300ms, opacity 300ms;
+                        }
+                        span{
+                            opacity: 0;
+                            transition: opacity 300ms;
+                        }
+                    }
 
             }
         </style>
@@ -259,6 +271,8 @@ export default class AppleGameBoard extends HTMLElement {
     }
     dragEnd() {
         this.dragging = false;
+
+        this.collect();
         this.pos1 = null;
         this.pos2 = null;
 
@@ -283,6 +297,18 @@ export default class AppleGameBoard extends HTMLElement {
     }
     clearSelection() {
         this.$board.querySelectorAll(".apple.selected").forEach($apple => $apple.classList.remove("selected"));
+    }
+
+    collect() {
+        let sum = 0;
+        const $selectedApples = this.$board.querySelectorAll(".apple.selected:not(.collected)");
+        for (const $apple of $selectedApples) {
+            sum += Number($apple.textContent);
+        }
+        if (sum !== 10) return;
+        for (const $apple of $selectedApples) {
+            $apple.classList.add("collected");
+        }
     }
 }
 
