@@ -11,6 +11,7 @@ export default class AppleGameBoard extends HTMLElement {
             :host{
                 --num-rows:8;
                 --num-cols:11;
+                --duration:15;
             }
             *{
                 margin : 0;
@@ -72,8 +73,12 @@ export default class AppleGameBoard extends HTMLElement {
                     width:100%;
                     height : 100%;
                     background-color:var(--color-progress-thumb);
-                    transform:scaleX(0.6);
+                    transform:scaleX(1);
                     transform-origin : top left;
+                }
+                div.playing{
+                    transform:scaleX(0);
+                    transition: transform calc(var(--duration) * 1s) linear;
                 }
             }
             .refresh{
@@ -135,9 +140,7 @@ export default class AppleGameBoard extends HTMLElement {
                         justify-content: center;
                     }
 
-                    &:hover{
-                        cursor :crosshair;
-                    }
+                    
                 }
 
                 .apple.selected{
@@ -150,19 +153,30 @@ export default class AppleGameBoard extends HTMLElement {
                         color:var(--color-text);
                     }
                 }
-                    .apple.collected{
-                        svg{
-                            opacity : 0;
-                            transform: scale(2);
-                            transition: transform 300ms, opacity 300ms;
-                        }
-                        span{
-                            opacity: 0;
-                            transition: opacity 300ms;
-                        }
+                .apple.collected{
+                    svg{
+                        opacity : 0;
+                        transform: scale(2);
+                        transition: transform 300ms, opacity 300ms;
                     }
-
+                    span{
+                        opacity: 0;
+                        transition: opacity 300ms;
+                    }
+                }
             }
+                .board.playing{
+                    cursor : crosshair;
+                }
+
+                .board:not(.playing){
+                    .apple:not(.collected){
+                        opacity: 0.7;
+                    }
+                    span{
+                        opacity : 0;
+                    }
+                }
         </style>
         <template id="apple-icon">
             <svg
@@ -216,11 +230,12 @@ export default class AppleGameBoard extends HTMLElement {
         this.$appleIcon = this.$root.querySelector("#apple-icon").content;
         this.$score = this.$root.querySelector(".score span");
         this.$refresh = this.$root.querySelector(".refresh");
-
+        this.$progress = this.$root.querySelector(".progress div");
 
         const styles = window.getComputedStyle(this.$board);
         this.numRows = styles.getPropertyValue("--num-rows");
         this.numCols = styles.getPropertyValue("--num-cols");
+        this.duration = styles.getPropertyValue("--duration")
 
         //variables
         this.$apples = [];
@@ -229,6 +244,8 @@ export default class AppleGameBoard extends HTMLElement {
         this.pos2 = null; //[row, col]
         this.score = 0;
         this.refreshUsed = false;
+        this.playing = false;
+        this.timerId = null;
 
         for (let row = 0; row < this.numRows; row++) {
             for (let col = 0; col < this.numCols; col++) {
@@ -237,7 +254,7 @@ export default class AppleGameBoard extends HTMLElement {
 
                 const $icon = this.$appleIcon.cloneNode(true);
                 const $number = document.createElement("span")
-                $number.textContent = Math.floor(Math.random() * 9 + 1);
+
 
                 $apple.addEventListener("mousedown", (e) => {
                     this.dragBegin(e, row, col);
@@ -257,8 +274,31 @@ export default class AppleGameBoard extends HTMLElement {
         }
         document.addEventListener("mousemove", () => this.dragEnd());
         this.$refresh.addEventListener("click", () => this.refresh());
+
+        setTimeout(() => this.start(), 2000);
+    }
+
+    start() {
+        this.playing = true;
+        this.refreshUsed = false;
+        this.score = 0;
+
+        this.$board.classList.add("playing");
+        this.$score.textContent = this.score;
+        this.$progress.classList.add("playing");
+        this.$refresh.removeAttribute("disabled");
+
+        this.resetApples();
+        this.timerId = setTimeout(() => this.gameover(), this.duration * 1000);
+    }
+
+    gameover() {
+        this.dragEnd();
+        this.playing = false;
+        this.$board.classList.remove("playing");
     }
     dragBegin(e, row, col) {
+        if (!this.playing) return;
         if (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -270,6 +310,7 @@ export default class AppleGameBoard extends HTMLElement {
         this.drawSelection();
     }
     dragMove(e, row, col) {
+        if (!this.playing) return;
         if (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -280,6 +321,7 @@ export default class AppleGameBoard extends HTMLElement {
         this.drawSelection();
     }
     dragEnd() {
+        if (!this.dragging || !this.playing) return;
         this.dragging = false;
 
         this.collect();
@@ -305,6 +347,7 @@ export default class AppleGameBoard extends HTMLElement {
             }
         }
     }
+
     clearSelection() {
         this.$board.querySelectorAll(".apple.selected").forEach($apple => $apple.classList.remove("selected"));
     }
@@ -322,16 +365,22 @@ export default class AppleGameBoard extends HTMLElement {
         this.score += $selectedApples.length;
         this.$score.textContent = this.score;
     }
+
     refresh() {
         if (this.refreshUsed) return;
 
+        this.resetApples();
+
+        this.refreshUsed = true;
+        this.$refresh.setAttribute("disabled", "");
+    }
+
+    resetApples() {
         for (const $apple of this.$apples) {
             $apple.className = "apple";
             const $number = $apple.querySelector("span");
             $number.textContent = Math.floor(Math.random() * 9) + 1;
         }
-        this.refreshUsed = true;
-        this.$refresh.setAttribute("disabled", "");
     }
 }
 
