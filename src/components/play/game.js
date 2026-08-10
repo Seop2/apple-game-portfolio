@@ -12,13 +12,17 @@ export default class AppleGameBoard extends HTMLElement {
                 --num-rows:8;
                 --num-cols:11;
             }
-
             *{
                 margin : 0;
                 padding: 0;
                 box-sizing: border-box;
-            }
 
+                touch-action:none;
+                user-select: none;
+                -webkit-user-drag:none;
+                -webkit-user-select:none;
+                -webkit-touch-callout:none;
+            }
             .container{
                 display: grid;
                 grid-template-areas:
@@ -29,7 +33,6 @@ export default class AppleGameBoard extends HTMLElement {
                 justify-items: center;
                 grid-gap:10px;
             }
-
             .score{
                 grid-area: score;
 
@@ -56,7 +59,6 @@ export default class AppleGameBoard extends HTMLElement {
                     justify-content: center;
                 }
             }
-
             .progress{
                 grid-area: progress;
 
@@ -74,7 +76,6 @@ export default class AppleGameBoard extends HTMLElement {
                     transform-origin : top left;
                 }
             }
-
             .refresh{
                 grid-area: refresh;
                 width:70px;
@@ -89,9 +90,6 @@ export default class AppleGameBoard extends HTMLElement {
                     height:100%;
                 }
             }
-
-            
-
             .board{
                 --padding:5px;
                 --border:8px;
@@ -101,9 +99,11 @@ export default class AppleGameBoard extends HTMLElement {
 
 
                 grid-area : board;
+
                 background-color:var(--color-board-bg);
                 border: var(--border) solid  var(--color-board-border);
                 border-radius : 12px;
+                
                 padding : var(--padding);
                 display:grid;
                 grid-template-rows : repeat(var(--num-rows), var(--apple-size));
@@ -129,8 +129,22 @@ export default class AppleGameBoard extends HTMLElement {
                         align-items: center;
                         justify-content: center;
                     }
+
+                    &:hover{
+                        cursor :crosshair;
+                    }
                 }
-                
+
+                .apple.selected{
+                    background-color : var(--color-apple-bg-selected);
+
+                    path {
+                        fill:var(--color-apple-icon-selected);
+                    }
+                    span{
+                        color:var(--color-text);
+                    }
+                }
 
             }
         </style>
@@ -153,10 +167,6 @@ export default class AppleGameBoard extends HTMLElement {
             />
             </svg>
         </template>
-
-
-
-
         <div class="container">
             <div class="score">
                 <svg
@@ -193,6 +203,11 @@ export default class AppleGameBoard extends HTMLElement {
         this.numRows = styles.getPropertyValue("--num-rows");
         this.numCols = styles.getPropertyValue("--num-cols");
 
+        //variables
+        this.$apples = [];
+        this.dragging = false;
+        this.pos1 = null; //[row, col]
+        this.pos2 = null; //[row, col]
 
         for (let row = 0; row < this.numRows; row++) {
             for (let col = 0; col < this.numCols; col++) {
@@ -203,15 +218,73 @@ export default class AppleGameBoard extends HTMLElement {
                 const $number = document.createElement("span")
                 $number.textContent = Math.floor(Math.random() * 9 + 1);
 
+                $apple.addEventListener("mousedown", (e) => {
+                    this.dragBegin(e, row, col);
+                });
+
+                $apple.addEventListener("mousemove", (e) => {
+                    this.dragMove(e, row, col);
+                });
+
+                $apple.addEventListener("mouseup", () => this.dragEnd());
 
                 $apple.appendChild($icon);
                 $apple.appendChild($number);
                 this.$board.appendChild($apple);
+                this.$apples.push($apple);
+            }
+        }
+        document.addEventListener("mousemove", () => this.dragEnd())
+    }
+    dragBegin(e, row, col) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        this.dragging = true;
+        this.pos1 = [row, col];
+        this.pos2 = [row, col];
+
+        this.drawSelection();
+    }
+    dragMove(e, row, col) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        if (!this.dragging) return;
+
+        this.pos2 = [row, col];
+        this.drawSelection();
+    }
+    dragEnd() {
+        this.dragging = false;
+        this.pos1 = null;
+        this.pos2 = null;
+
+        this.clearSelection();
+    }
+
+    drawSelection() {
+        this.clearSelection();
+
+        const minRow = Math.min(this.pos1[0], this.pos2[0]);
+        const maxRow = Math.max(this.pos1[0], this.pos2[0]);
+        const minCol = Math.min(this.pos1[1], this.pos2[1]);
+        const maxCol = Math.max(this.pos1[1], this.pos2[1]);
+
+
+        for (let row = minRow; row <= maxRow; row++) {
+            for (let col = minCol; col <= maxCol; col++) {
+                const $apple = this.$apples[row * this.numCols + col];
+                $apple.classList.add("selected");
             }
         }
     }
+    clearSelection() {
+        this.$board.querySelectorAll(".apple.selected").forEach($apple => $apple.classList.remove("selected"));
+    }
 }
-
 
 if (!customElements.get("apple-game-board")) {
     customElements.define("apple-game-board", AppleGameBoard)
