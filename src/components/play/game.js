@@ -277,6 +277,9 @@ export default class AppleGameBoard extends HTMLElement {
         this.playing = false;
         this.timerId = null;
 
+        this.startTime = null;
+        this.logs = null;
+
         for (let row = 0; row < this.numRows; row++) {
             for (let col = 0; col < this.numCols; col++) {
                 const $apple = document.createElement("div");
@@ -312,6 +315,9 @@ export default class AppleGameBoard extends HTMLElement {
         this.refreshUsed = false;
         this.score = 0;
 
+        this.logs = [];
+        this.startTime = new Date();
+
         this.$board.classList.add("playing");
         this.$score.textContent = this.score;
         this.$progress.classList.add("playing");
@@ -341,7 +347,7 @@ export default class AppleGameBoard extends HTMLElement {
         this.$finalScore.textContent = this.score;
 
         this.dispatchEvent(new CustomEvent("gameover", {
-            detail: { score: this.score, date: new Date() }
+            detail: { score: this.score, date: new Date(), replay: { logs: this.logs } }
         }));
     }
     dragBegin(e, row, col) {
@@ -370,6 +376,8 @@ export default class AppleGameBoard extends HTMLElement {
     dragEnd() {
         if (!this.dragging || !this.playing) return;
         this.dragging = false;
+
+        this.logs.push({ pos1: this.pos1, pos2: this.pos2, time: Date.now() - this.startTime });
 
         this.collect();
         this.pos1 = null;
@@ -415,6 +423,8 @@ export default class AppleGameBoard extends HTMLElement {
 
     refresh() {
         if (this.refreshUsed || !this.playing) return;
+
+        this.logs.push({ refresh: true, time: new Date() - this.startTime });
 
         this.resetApples();
 

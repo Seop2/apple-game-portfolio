@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useRef, useState } from "react";
 import styles from "./page.module.css"
 import GameBoard from "@/components/play/GameBoard";
 import { useRanking } from "../store";
@@ -10,27 +10,28 @@ export default function Play() {
     const [playing, setPlaying] = useState(false);
     const ref = useRef(null);
 
-    function gamestart() {
+    const gamestart = useCallback(() => {
         if (!playing) {
             ref.current.start();
         } else {
             ref.current.stop();
         }
         setPlaying((v) => !v);
-    }
+    }, [playing])
 
 
-    function attachRef(el) {
+    const attachRef = useCallback((el) => {
         ref.current = el;
         if (!el) return;
 
         const onGameOver = (e) => {
+            console.log(e.detail);
             addRecord(e.detail);
             setPlaying(false);
         }
         el.addEventListener("gameover", onGameOver);
         return () => el.removeEventListener("gameover", onGameOver);
-    }
+    }, [addRecord])
 
     return (
         <main className={styles.page}>
