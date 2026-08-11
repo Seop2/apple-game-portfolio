@@ -3,6 +3,9 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 const RankingContext = createContext(null);
 
+const VERSION = "2";
+
+
 export function RankingProvider({ children }) {
     const [ranks, setRanks] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -17,6 +20,11 @@ export function RankingProvider({ children }) {
     }, []);
 
     useEffect(() => {
+        const version = localStorage.getItem("version");
+        if (version != VERSION) {
+            localStorage.clear();
+            localStorage.setItem("version", VERSION);
+        }
         const rawRanks = localStorage.getItem("ranks");
         const initialRanks = rawRanks ? JSON.parse(rawRanks) : []
         setRanks(initialRanks);
