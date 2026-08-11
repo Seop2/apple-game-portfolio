@@ -279,6 +279,8 @@ export default class AppleGameBoard extends HTMLElement {
 
         this.startTime = null;
         this.logs = null;
+        this.board1 = null;
+        this.board2 = null;
 
         for (let row = 0; row < this.numRows; row++) {
             for (let col = 0; col < this.numCols; col++) {
@@ -317,6 +319,8 @@ export default class AppleGameBoard extends HTMLElement {
 
         this.logs = [];
         this.startTime = new Date();
+        this.board1 = this.resetApples();
+        this.board2 = null;
 
         this.$board.classList.add("playing");
         this.$score.textContent = this.score;
@@ -324,7 +328,7 @@ export default class AppleGameBoard extends HTMLElement {
         this.$refresh.removeAttribute("disabled");
         this.$finalScore.textContent = "";
 
-        this.resetApples();
+
         this.timerId = setTimeout(() => this.gameover(), this.duration * 1000);
     }
 
@@ -347,7 +351,7 @@ export default class AppleGameBoard extends HTMLElement {
         this.$finalScore.textContent = this.score;
 
         this.dispatchEvent(new CustomEvent("gameover", {
-            detail: { score: this.score, date: new Date(), replay: { logs: this.logs } }
+            detail: { score: this.score, date: new Date(), replay: { logs: this.logs, board1: this.board1, board2: this.board2 } }
         }));
     }
     dragBegin(e, row, col) {
@@ -426,18 +430,22 @@ export default class AppleGameBoard extends HTMLElement {
 
         this.logs.push({ refresh: true, time: new Date() - this.startTime });
 
-        this.resetApples();
+        this.board2 = this.resetApples();
 
         this.refreshUsed = true;
         this.$refresh.setAttribute("disabled", "");
     }
 
     resetApples() {
+        const board = [];
         for (const $apple of this.$apples) {
+            const n = Math.floor(Math.random() * 9) + 1;
             $apple.className = "apple";
             const $number = $apple.querySelector("span");
-            $number.textContent = Math.floor(Math.random() * 9) + 1;
+            $number.textContent = n;
+            board.push(n);
         }
+        return board;
     }
 }
 
