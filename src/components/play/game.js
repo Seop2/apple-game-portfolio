@@ -340,7 +340,9 @@ export default class AppleGameBoard extends HTMLElement {
         this.$progress.classList.remove("playing");
         this.$finalScore.textContent = this.score;
 
-        this.dispatchEvent(new CustomEvent("gameover"));
+        this.dispatchEvent(new CustomEvent("gameover", {
+            detail: { score: this.score, date: new Date() }
+        }));
     }
     dragBegin(e, row, col) {
         if (!this.playing) return;

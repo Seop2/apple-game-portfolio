@@ -3,8 +3,10 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import styles from "./page.module.css"
 import GameBoard from "@/components/play/GameBoard";
+import { useRanking } from "../store";
 
 export default function Play() {
+    const { addRecord } = useRanking();
     const [playing, setPlaying] = useState(false);
     const ref = useRef(null);
 
@@ -22,7 +24,10 @@ export default function Play() {
         ref.current = el;
         if (!el) return;
 
-        const onGameOver = () => setPlaying(false);
+        const onGameOver = (e) => {
+            addRecord(e.detail);
+            setPlaying(false);
+        }
         el.addEventListener("gameover", onGameOver);
         return () => el.removeEventListener("gameover", onGameOver);
     }
