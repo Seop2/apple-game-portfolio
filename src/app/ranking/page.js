@@ -29,7 +29,7 @@ export default function RankingPage() {
                         <td>{i + 1}</td>
                         <td>{score}</td>
                         <td></td>
-                        <td>{dateFmt.format(date)}</td>
+                        <td>{dateFmt.format(new Date(date))}</td>
                         <td><button>show</button></td>
                     </tr>))}
                     {Array(10 - ranks.length).fill(null).map((_, i) => (
