@@ -305,7 +305,6 @@ export default class AppleGameBoard extends HTMLElement {
         document.addEventListener("mousemove", () => this.dragEnd());
         this.$refresh.addEventListener("click", () => this.refresh());
 
-        setTimeout(() => this.start(), 2000);
     }
 
     start() {
@@ -400,7 +399,7 @@ export default class AppleGameBoard extends HTMLElement {
     }
 
     refresh() {
-        if (this.refreshUsed) return;
+        if (this.refreshUsed || !this.playing) return;
 
         this.resetApples();
 
