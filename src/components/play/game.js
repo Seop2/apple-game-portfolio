@@ -322,12 +322,25 @@ export default class AppleGameBoard extends HTMLElement {
         this.timerId = setTimeout(() => this.gameover(), this.duration * 1000);
     }
 
+    stop() {
+        this.playing = false;
+        if (this.timerId) {
+            clearTimeout(this.timerId);
+            this.timerId = null;
+        }
+        this.$board.classList.remove("playing");
+        this.$progress.classList.remove("playing");
+    }
+
     gameover() {
         this.dragEnd();
         this.playing = false;
         this.timerId = null;
         this.$board.classList.remove("playing");
+        this.$progress.classList.remove("playing");
         this.$finalScore.textContent = this.score;
+
+        this.dispatchEvent(new CustomEvent("gameover"));
     }
     dragBegin(e, row, col) {
         if (!this.playing) return;

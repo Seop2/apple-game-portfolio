@@ -4,10 +4,13 @@ import dynamic from "next/dynamic";
 
 const AppleGame = dynamic(() =>
     import("./game.js").then(() => ({
-        default: () => <apple-game-board />
+
+        default({ ref }) {
+            return <apple-game-board ref={ref} />
+        }
     })), { ssr: false }
 );
 
-export default function GameBoard() {
-    return <AppleGame />;
+export default function GameBoard({ ref }) {
+    return <AppleGame ref={ref} />;
 }
