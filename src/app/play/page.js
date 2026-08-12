@@ -25,14 +25,8 @@ export default function Play() {
         if (!el) return;
 
         const onGameOver = (e) => {
-            console.log(e.detail);
             addRecord(e.detail);
             setPlaying(false);
-
-            setTimeout(() => {
-                window.alert("start replay ")
-                ref.current.replay(e.detail.replay);
-            }, 2000);
         }
         el.addEventListener("gameover", onGameOver);
         return () => el.removeEventListener("gameover", onGameOver);

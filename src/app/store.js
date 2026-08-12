@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 const RankingContext = createContext(null);
 
-const VERSION = "2";
+const VERSION = "3";
 
 
 export function RankingProvider({ children }) {
@@ -11,9 +11,14 @@ export function RankingProvider({ children }) {
     const [isLoaded, setIsLoaded] = useState(false);
 
     const addRecord = useCallback((record) => {
+        record.dragCount = record.replay.logs.filter(log => !log.refresh).length;
         setRanks(prev => ([record, ...prev].sort((a, b) => {
             const ds = b.score - a.score; //내림차순
             if (ds !== 0) return ds;
+
+            const dragCnt = a.dragCount - b.dragCount;
+            if (dragCnt !== 0) return dragCnt;
+
             return new Date(a.date) - new Date(b.date);
             //score , date 
         }).slice(0, 10))) // 10등까지
