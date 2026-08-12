@@ -277,6 +277,7 @@ export default class AppleGameBoard extends HTMLElement {
         this.playing = false;
         this.timerId = null;
 
+        this.replaying = false;
         this.startTime = null;
         this.logs = null;
         this.board1 = null;
@@ -292,14 +293,19 @@ export default class AppleGameBoard extends HTMLElement {
 
 
                 $apple.addEventListener("mousedown", (e) => {
+                    if (this.replaying) return;
                     this.dragBegin(e, row, col);
                 });
 
                 $apple.addEventListener("mousemove", (e) => {
+                    if (this.replaying) return;
                     this.dragMove(e, row, col);
                 });
 
-                $apple.addEventListener("mouseup", () => this.dragEnd());
+                $apple.addEventListener("mouseup", () => {
+                    if (this.replaying) return;
+                    this.dragEnd()
+                });
 
                 $apple.appendChild($icon);
                 $apple.appendChild($number);
@@ -307,12 +313,19 @@ export default class AppleGameBoard extends HTMLElement {
                 this.$apples.push($apple);
             }
         }
-        document.addEventListener("mousemove", () => this.dragEnd());
-        this.$refresh.addEventListener("click", () => this.refresh());
+        document.addEventListener("mousemove", () => {
+            if (this.replaying) return;
+            this.dragEnd()
+        });
+        this.$refresh.addEventListener("click", () => {
+            if (this.replaying) return;
+            this.refresh()
+        });
 
     }
 
     start() {
+        this.replaying = false;
         this.playing = true;
         this.refreshUsed = false;
         this.score = 0;
@@ -322,12 +335,7 @@ export default class AppleGameBoard extends HTMLElement {
         this.board1 = this.resetApples();
         this.board2 = null;
 
-        this.$board.classList.add("playing");
-        this.$score.textContent = this.score;
-        this.$progress.classList.add("playing");
-        this.$refresh.removeAttribute("disabled");
-        this.$finalScore.textContent = "";
-
+        this.resetUI();
 
         this.timerId = setTimeout(() => this.gameover(), this.duration * 1000);
     }
@@ -342,13 +350,123 @@ export default class AppleGameBoard extends HTMLElement {
         this.$progress.classList.remove("playing");
     }
 
+
+    replay({ logs, board1, board2 }) {
+        this.playing = true;
+        this.refreshUsed = false;
+        this.score = 0;
+
+        this.replaying = true;
+        this.startTime = new Date();
+        this.logs = logs;
+        this.board1 = board1;
+        this.board2 = board2;
+        this.draggingTimerId = null;
+
+        this.resetApplesForReplay(board1);
+        this.resetUI();
+        this.timerId = setTimeout(() => this.gameover(), this.duration * 1000);
+
+        requestAnimationFrame(() => this.replayTick())
+    }
+
+    replayTick() {
+        if (!this.playing || this.logs.length === 0) return;
+        const timeSpan = new Date() - this.startTime;
+        const log = this.logs[0];
+        if (log.refresh && log.time <= timeSpan) {
+            if (this.draggingTimerId) {
+                clearTimeout(this.draggingTimerId);
+                this.draggingTimerId = null;
+                this.dragEnd();
+            }
+
+            this.refresh();
+            this.logs.splice(0, 1);
+        } else if (!log.refresh && log.time <= timeSpan + 500) {
+            if (this.draggingTimerId) {
+                clearTimeout(this.draggingTimerId);
+                this.draggingTimerId = null;
+                this.dragEnd();
+            }
+            this.dragBegin(null, ...log.pos1);
+            this.dragMove(null, ...log.pos2);
+            this.logs.splice(0, 1);
+
+            this.draggingTimerId = setTimeout(() => {
+                this.draggingTimerId = null;
+                this.dragEnd();
+            }, 450);
+        };
+
+        requestAnimationFrame(() => this.replayTick());
+
+    }
+
+
+    resetUI() {
+        this.$board.classList.add("playing");
+        this.$progress.classList.remove("playing");
+        this.$progress.offsetHeight;
+        this.$progress.classList.add("playing");
+        this.$score.textContent = this.score;
+        this.$finalScore.textContent = "";
+        this.$refresh.removeAttribute("disabled");
+
+
+    }
+
+
+    refresh() {
+        if (this.refreshUsed || !this.playing) return;
+
+        if (!this.replaying) {
+            this.logs.push({
+                refresh: true,
+                time: new Date() - this.startTime
+            })
+            this.board2 = this.resetApples();
+        } else {
+            this.resetApplesForReplay(this.board2);
+        }
+
+        this.refreshUsed = true;
+        this.$refresh.setAttribute("disabled", "");
+    }
+
+    resetApplesForReplay(board) {
+        for (let i = 0; i < this.$apples.length; i++) {
+            const $apple = this.$apples[i];
+            $apple.className = "apple";
+            const $number = $apple.querySelector("span");
+            $number.textContent = board[i];
+        }
+    }
+
+    resetApples() {
+        const board = [];
+        for (const $apple of this.$apples) {
+            const n = Math.floor(Math.random() * 9) + 1;
+            $apple.className = "apple";
+            const $number = $apple.querySelector("span");
+            $number.textContent = n;
+            board.push(n);
+        }
+        return board;
+    }
+
     gameover() {
         this.dragEnd();
+
         this.playing = false;
         this.timerId = null;
+
         this.$board.classList.remove("playing");
-        this.$progress.classList.remove("playing");
         this.$finalScore.textContent = this.score;
+
+        if (this.replaying) {
+            return;
+        }
 
         this.dispatchEvent(new CustomEvent("gameover", {
             detail: { score: this.score, date: new Date(), replay: { logs: this.logs, board1: this.board1, board2: this.board2 } }
@@ -366,6 +484,8 @@ export default class AppleGameBoard extends HTMLElement {
 
         this.drawSelection();
     }
+
+
     dragMove(e, row, col) {
         if (!this.playing) return;
         if (e) {
@@ -379,9 +499,14 @@ export default class AppleGameBoard extends HTMLElement {
     }
     dragEnd() {
         if (!this.dragging || !this.playing) return;
+
+        if (!this.replaying) {
+            this.logs.push({ pos1: this.pos1, pos2: this.pos2, time: Date.now() - this.startTime });
+        }
+
+
         this.dragging = false;
 
-        this.logs.push({ pos1: this.pos1, pos2: this.pos2, time: Date.now() - this.startTime });
 
         this.collect();
         this.pos1 = null;
@@ -425,28 +550,7 @@ export default class AppleGameBoard extends HTMLElement {
         this.$score.textContent = this.score;
     }
 
-    refresh() {
-        if (this.refreshUsed || !this.playing) return;
 
-        this.logs.push({ refresh: true, time: new Date() - this.startTime });
-
-        this.board2 = this.resetApples();
-
-        this.refreshUsed = true;
-        this.$refresh.setAttribute("disabled", "");
-    }
-
-    resetApples() {
-        const board = [];
-        for (const $apple of this.$apples) {
-            const n = Math.floor(Math.random() * 9) + 1;
-            $apple.className = "apple";
-            const $number = $apple.querySelector("span");
-            $number.textContent = n;
-            board.push(n);
-        }
-        return board;
-    }
 }
 
 if (!customElements.get("apple-game-board")) {
