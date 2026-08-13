@@ -6,7 +6,6 @@ export default function Header() {
             <Link href="/" className={styles.title}>
                 <h1>APPLE GAME</h1>
             </Link>
-
             <nav>
                 <Link href="/">Home</Link>
                 <Link href="/play">Play</Link>

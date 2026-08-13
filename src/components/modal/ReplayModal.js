@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import GameBoard from "../play/GameBoard"
 import styles from "./ReplayModal.module.css"
 import { decompressFromEncodedURIComponent } from "lz-string";
