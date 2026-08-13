@@ -1,7 +1,9 @@
 "use client"
 
+import ReplayModal from "@/components/modal/ReplayModal";
 import { useRanking } from "../store";
 import styles from "./page.module.css"
+import { useState } from "react";
 
 const dateFmt = new Intl.DateTimeFormat("en-US", {
     month: "short", // Jan, Feb, …
@@ -11,6 +13,7 @@ const dateFmt = new Intl.DateTimeFormat("en-US", {
 
 export default function RankingPage() {
     const { ranks } = useRanking();
+    const [replayData, setReplayData] = useState(null);
     return (
         <main className={styles.page}>
             <h1>Ranking</h1>
@@ -25,12 +28,12 @@ export default function RankingPage() {
                     </tr>
                 </thead>
                 <tbody>
-                    {ranks.map(({ score, date, dragCount }, i) => (<tr key={`rank ${i}`}>
+                    {ranks.map(({ score, date, dragCount, replay }, i) => (<tr key={`rank ${i}`}>
                         <td>{i + 1}</td>
                         <td>{score}</td>
                         <td>{dragCount}</td>
                         <td>{dateFmt.format(new Date(date))}</td>
-                        <td><button>show</button></td>
+                        <td><button onClick={() => setReplayData(replay)}>show</button></td>
                     </tr>))}
                     {Array(10 - ranks.length).fill(null).map((_, i) => (
                         <tr key={`dummy-${i}`}>
@@ -39,6 +42,8 @@ export default function RankingPage() {
                     ))}
                 </tbody>
             </table>
+            {replayData && <ReplayModal replayData={replayData} onClose={() => setReplayData(null)} />}
+
         </main>
     );
 }
