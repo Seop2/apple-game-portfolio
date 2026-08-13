@@ -13,7 +13,7 @@ export default function LandingPage() {
                 <section>
                     <Image src="/logo.png" width={150} height={150} alt="logo" priority />
                     <h1>재밌는 사과게임</h1>
-                    <p>게임 설명</p>
+                    <h3>게임 설명</h3>
                     <p>"제한 시간 동안 숫자 1부터 9까지 적힌 사과 중 합이 10이 되는 사과들을 드래그하여 사각형으로 묶어 없애는 퍼즐 게임입니다"</p>
                     <Link href="/play" className={styles.playButton}>게임 시작</Link>
                 </section>

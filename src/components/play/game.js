@@ -109,6 +109,9 @@ export default class AppleGameBoard extends HTMLElement {
 
                 grid-area : board;
 
+                @media (max-width: 640px){
+                    --board-width: calc(100vw - 10px);
+                }
 
                 position:relative;
                 background-color:var(--color-board-bg);
