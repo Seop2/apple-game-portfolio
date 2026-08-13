@@ -4,7 +4,7 @@ import { compressToEncodedURIComponent } from "lz-string";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 const RankingContext = createContext(null);
 
-const VERSION = "4";
+const VERSION = "5";
 
 
 export function RankingProvider({ children }) {

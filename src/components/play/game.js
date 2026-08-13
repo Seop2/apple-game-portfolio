@@ -11,7 +11,7 @@ export default class AppleGameBoard extends HTMLElement {
             :host{
                 --num-rows:8;
                 --num-cols:11;
-                --duration:15;
+                --duration:75;
             }
             *{
                 margin : 0;
