@@ -3,6 +3,8 @@ import Link from "next/link";
 import styles from "./page.module.css"
 import { Suspense } from "react";
 import ReplayController from "@/components/modal/ReplayController";
+import DemoComponent from "@/components/DemoComponent";
+
 export default function LandingPage() {
 
     return (
@@ -19,7 +21,9 @@ export default function LandingPage() {
                 <section>
                     <h2>데모 리플레이</h2>
                     <h3>어떤 게임인지 보여주는 영상</h3>
-                    <Image src="/demo.png" width={600} height={500} alt="demo" priority />
+                    <Suspense fallback={<div>로딩중...</div>}>
+                        <DemoComponent />
+                    </Suspense>
                 </section>
 
                 <section>
