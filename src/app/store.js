@@ -1,9 +1,10 @@
 "use client"
 
+import { compressToEncodedURIComponent } from "lz-string";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 const RankingContext = createContext(null);
 
-const VERSION = "3";
+const VERSION = "4";
 
 
 export function RankingProvider({ children }) {
@@ -12,6 +13,7 @@ export function RankingProvider({ children }) {
 
     const addRecord = useCallback((record) => {
         record.dragCount = record.replay.logs.filter(log => !log.refresh).length;
+        record.replay = compressToEncodedURIComponent(JSON.stringify(record.replay));
         setRanks(prev => ([record, ...prev].sort((a, b) => {
             const ds = b.score - a.score; //내림차순
             if (ds !== 0) return ds;
