@@ -17,9 +17,9 @@
         border-radius: 12px;
         display: grid;
         grid-template-areas:
-            "title close"
-            "board board";
-        grid-template-columns: 1fr max-content;
+            "title share close"
+            "board board board";
+        grid-template-columns: 1fr max-content max-content;
         gap: 20px;
     }
 
@@ -40,5 +40,16 @@
 
     .board {
         grid-area: board;
+    }
+
+    .share {
+        grid-area: share;
+        border: none;
+        padding: 5px 10px;
+        font-size: 20px;
+        background-color: var(--color-button-bg);
+        color: var(--color-button-text);
+        border-radius: 12px;
+        cursor: pointer;
     }
 }
