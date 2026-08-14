@@ -99,6 +99,12 @@ export default class AppleGameBoard extends HTMLElement {
                     cursor:not-allowed;
                     opacity : 0.5;
                 }
+
+            @media (max-width: 640px){
+                :host([mode="play"]) .board .apple{
+                    transform: rotateZ(-90deg);
+                }
+            }
             .board{
                 --padding:5px;
                 --border:8px;
@@ -111,6 +117,11 @@ export default class AppleGameBoard extends HTMLElement {
 
                 @media (max-width: 640px){
                     --board-width: calc(100vw - 10px);
+                    --apple-size: calc(var(--board-inner-width) / var(--num-rows));
+
+                    transform: translateY(
+                        calc((var(--num-cols) - var(--num-rows)) / 2 * var(--apple-size))
+                    ) rotateZ(90deg);
                 }
 
                 position:relative;
@@ -127,6 +138,9 @@ export default class AppleGameBoard extends HTMLElement {
                     position: relative;
                     padding:2px;
 
+                    @media (max-width: 640px){
+                        transform: rotateZ(-90deg);
+                    }
                     path {
                         fill:var(--color-apple-icon);
                     }
@@ -184,11 +198,15 @@ export default class AppleGameBoard extends HTMLElement {
             }
                 .board.playing{
                     cursor : crosshair;
-                    
+
                     .final-score{
                         opacity:0;
                         transform:scale(0);
                         z-index:-1;
+
+                        @media (max-width: 640px){
+                            transform: scale(0) rotateZ(-90deg);
+                        }
                     }
                 }
 
@@ -205,6 +223,10 @@ export default class AppleGameBoard extends HTMLElement {
                         transform:scale(1);
                         transition: transform 400ms;
                         z-index:2;
+
+                        @media (max-width: 640px){
+                            transform: scale(1) rotateZ(-90deg);
+                        }
                     }
                 }
         </style>
