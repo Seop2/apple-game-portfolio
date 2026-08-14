@@ -38,5 +38,15 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
+        @media (max-width: 640px) {
+            td.date {
+                font-size: 14px;
+            }
+
+            th {
+                padding: 8px 10px;
+            }
+        }
     }
 }

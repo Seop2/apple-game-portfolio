@@ -21,6 +21,17 @@
             "board board board";
         grid-template-columns: 1fr max-content max-content;
         gap: 20px;
+
+        @media (max-width: 640px) {
+            border-radius: 5px;
+            grid-template-areas:
+                "title title close"
+                "board board board"
+                "share share share";
+
+            grid-template-columns: 1fr 1fr 1fr;
+
+        }
     }
 
     .title {
@@ -36,6 +47,10 @@
         border: none;
         border-radius: 12px;
         cursor: pointer;
+
+        @media (max-width: 640px) {
+            justify-self: end;
+        }
     }
 
     .board {
@@ -47,8 +62,8 @@
         border: none;
         padding: 5px 10px;
         font-size: 20px;
-        background-color: var(--color-button-bg);
-        color: var(--color-button-text);
+        background-color: var(--color-share-bg);
+        color: var(--color-share-text);
         border-radius: 12px;
         cursor: pointer;
     }

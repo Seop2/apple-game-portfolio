@@ -36,7 +36,7 @@ export default function Play() {
         <main className={styles.page}>
             <button
                 className={styles.gameStartButton}
-                onClick={gamestart}>{playing ? "게임종료" : "게임시작"}</button>
+                onClick={gamestart}>{playing ? "STOP" : "START"}</button>
 
             <Suspense fallback={<div>로딩중....</div>}>
                 <GameBoard ref={attachRef} />

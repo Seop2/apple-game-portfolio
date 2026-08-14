@@ -32,7 +32,7 @@ export default function RankingPage() {
                         <td>{i + 1}</td>
                         <td>{score}</td>
                         <td>{dragCount}</td>
-                        <td>{dateFmt.format(new Date(date))}</td>
+                        <td className={styles.date}>{dateFmt.format(new Date(date))}</td>
                         <td><button onClick={() => setReplayData(replay)}>show</button></td>
                     </tr>))}
                     {Array(10 - ranks.length).fill(null).map((_, i) => (

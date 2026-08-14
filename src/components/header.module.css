@@ -18,6 +18,10 @@
         text-decoration: none;
         font-size: 20px;
         font-weight: bold;
+
+        h1 {
+            color: var(--color-logo);
+        }
     }
 
     nav {

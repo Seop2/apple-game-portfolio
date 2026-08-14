@@ -12,6 +12,8 @@
     /* ----- semantic tokens ----- */
     --color-text: var(--clr-neutral-900);
     --color-bg: var(--clr-neutral-50);
+    --color-logo: var(--clr-red-600);
+
 
     --color-apple-bg-selected: var(--clr-blue-500);
     --color-apple-icon: var(--clr-red-600);
@@ -30,6 +32,8 @@
 
     --color-button-bg: var(--clr-neutral-900);
     --color-button-text: var(--clr-neutral-50);
+    --color-share-bg: var(--clr-blue-500);
+    --color-share-text: var(--clr-neutral-50);
 
 
     --color-landing-play-bg: var(--clr-red-600);
