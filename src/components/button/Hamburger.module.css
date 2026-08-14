@@ -12,3 +12,32 @@
 
      }
  }
+
+
+ .mobileMenu {
+     position: absolute;
+     top: 80%;
+     right: var(--side-padding);
+     border-radius: 12px;
+     background-color: var(--color-bg);
+     display: flex;
+     flex-direction: column;
+     gap: 5px;
+     min-width: 120px;
+     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+     a {
+         text-decoration: none;
+         font-size: 20px;
+         padding: 6px 12px;
+         border-radius: 8px;
+
+         &:hover,
+         &:active {
+             background-color: var(--color-button-bg);
+             color: var(--color-button-text);
+         }
+     }
+
+
+ }

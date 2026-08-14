@@ -49,31 +49,7 @@
         }
     }
 
-    .mobileMenu {
-        position: absolute;
-        top: 100%;
-        right: var(--side-padding);
-        margin-top: 4px;
-        padding: 10px;
-        border-radius: 12px;
-        background-color: var(--color-bg);
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        min-width: 120px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 
-        a {
-            text-decoration: none;
-            font-size: 16px;
-            padding: 6px 12px;
-            border-radius: 8px;
-        }
-
-        a:hover {
-            background-color: rgba(128, 128, 128, 0.1);
-        }
-    }
 
 
 }

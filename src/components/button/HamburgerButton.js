@@ -1,7 +1,6 @@
 "use client"
 import { useState } from "react"
 import styles from "./Hamburger.module.css"
-import headerStyles from "../header.module.css"
 import Image from "next/image"
 import Link from "next/link";
 
@@ -18,7 +17,7 @@ export default function HamburgerButton() {
                 <Image src={"/menu.png"} alt="menu" width={30} height={30} />
             </button>
             {isOpen && (
-                <nav className={headerStyles.mobileMenu} onClick={() => setOpen(false)}>
+                <nav className={styles.mobileMenu} onClick={() => setOpen(false)}>
                     <Link href="/">Home</Link>
                     <Link href="/play">Play</Link>
                     <Link href="/ranking">Ranking</Link>
