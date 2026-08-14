@@ -295,17 +295,22 @@ export default class AppleGameBoard extends HTMLElement {
                 const $number = document.createElement("span")
 
 
-                $apple.addEventListener("mousedown", (e) => {
+                $apple.addEventListener("pointerdown", (e) => {
                     if (this.replaying) return;
+
+                    if (e.target.hasPointerCapture(e.pointerId)) {
+                        e.target.releasePointerCapture(e.pointerId);
+                    }
+
                     this.dragBegin(e, row, col);
                 });
 
-                $apple.addEventListener("mousemove", (e) => {
+                $apple.addEventListener("pointermove", (e) => {
                     if (this.replaying) return;
                     this.dragMove(e, row, col);
                 });
 
-                $apple.addEventListener("mouseup", () => {
+                $apple.addEventListener("pointerup", () => {
                     if (this.replaying) return;
                     this.dragEnd()
                 });
@@ -316,7 +321,7 @@ export default class AppleGameBoard extends HTMLElement {
                 this.$apples.push($apple);
             }
         }
-        document.addEventListener("mousemove", () => {
+        document.addEventListener("pointermove", () => {
             if (this.replaying) return;
             this.dragEnd()
         });
