@@ -2,6 +2,7 @@ import { Hi_Melody } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import { RankingProvider } from "./store";
+import OrientationGuide from "@/components/OrientationGuide";
 
 /* 폰트 적용 */
 const hi_melody = Hi_Melody({
@@ -20,6 +21,7 @@ export default function RootLayout({ children }) {
         <RankingProvider>
           {children}
         </RankingProvider>
+        <OrientationGuide />
       </body>
     </html>
   );
