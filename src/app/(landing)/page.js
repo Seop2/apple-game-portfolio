@@ -35,6 +35,11 @@ export default function LandingPage() {
                     </ol>
                 </section>
 
+                <section>
+                    <h2>Github Repository</h2>
+                    <Link href="https://github.com/Seop2/apple-game-portfolio" target="_blank">https://github.com/Seop2/apple-game-portfolio</Link>
+                </section>
+
                 <section className={styles.game_footer}>
                     <h2>앱으로 설치하고 언제 어디서나 즐기세요!</h2>
                     <ul>
