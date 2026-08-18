@@ -9,8 +9,8 @@ export default class AppleGameBoard extends HTMLElement {
         this.$root.innerHTML = html`
         <style>
             :host{
-                --num-rows:8;
-                --num-cols:11;
+                --num-rows:10;
+                --num-cols:17;
                 --duration:75;
             }
             *{
@@ -48,7 +48,7 @@ export default class AppleGameBoard extends HTMLElement {
 
                 span{
                     position:absolute;
-                    top:8px;
+                    top:5px;
                     left:0;
                     width:100%;
                     height:100%;
@@ -146,7 +146,7 @@ export default class AppleGameBoard extends HTMLElement {
                     }
                     span{
                         position:absolute;
-                        top:8px;
+                        top:2px;
                         left:0;
                         width:100%;
                         height:100%;

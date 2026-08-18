@@ -1,12 +1,12 @@
-import { Hi_Melody } from "next/font/google";
+import { Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import { RankingProvider } from "./store";
 import OrientationGuide from "@/components/OrientationGuide";
 
 /* 폰트 적용 */
-const hi_melody = Hi_Melody({
-  variable: "--font-hi-melody",
+const noto_sans_kr = Noto_Sans_KR({
+  variable: "--font-noto-sans-kr",
   subsets: ["latin"], weight: "400"
 });
 
@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
       </head>
-      <body className={hi_melody.variable}>
+      <body className={noto_sans_kr.variable}>
         <Header />
         <RankingProvider>
           {children}
