@@ -3,10 +3,10 @@
 import { Suspense, useCallback, useRef, useState } from "react";
 import styles from "./page.module.css"
 import GameBoard from "@/components/play/GameBoard";
-import { useRanking } from "../store";
+import { useRankingStore } from "@/store/useRankStore";
 
 export default function Play() {
-    const { addRecord } = useRanking();
+    const addRecord = useRankingStore((state) => state.addRecord);
     const [playing, setPlaying] = useState(false);
     const ref = useRef(null);
 

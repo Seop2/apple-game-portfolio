@@ -1,7 +1,7 @@
 "use client"
 
 import ReplayModal from "@/components/modal/ReplayModal";
-import { useRanking } from "../store";
+import { useRankingStore } from "@/store/useRankStore";
 import styles from "./page.module.css"
 import { useState } from "react";
 
@@ -12,7 +12,7 @@ const dateFmt = new Intl.DateTimeFormat("en-US", {
 });
 
 export default function RankingPage() {
-    const { ranks } = useRanking();
+    const ranks = useRankingStore((state) => state.ranks);
     const [replayData, setReplayData] = useState(null);
     return (
         <main className={styles.page}>

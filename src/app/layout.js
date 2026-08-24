@@ -1,7 +1,6 @@
 import { Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
-import { RankingProvider } from "./store";
 import OrientationGuide from "@/components/OrientationGuide";
 
 /* 폰트 적용 */
@@ -29,9 +28,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className={noto_sans_kr.variable}>
         <Header />
-        <RankingProvider>
-          {children}
-        </RankingProvider>
+        {children}
         <OrientationGuide />
       </body>
     </html>
